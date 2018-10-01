@@ -1,24 +1,24 @@
 # Hugo-Algolia-Chinese-Builder
 
-This is Chinese index builder with Algolia For Hugo.
+这是一个使用go语言jieba分词器编写的中文分词器
 
-It dependen hugo-algolia.
+它依赖hugo-algolia编译出的json文件格式
 
 Detail to look [Art White](https://github.com/naah69/hugo-theme-artwhite)
 
-## Quick Start
+## 快速开始
 
-### 1 download main
-put the `main` and `compile` in the hugo project.
+### 1 下载main
+把`main` 和 `compile` 放在 hugo project中.
 
-### 2 install hugo-algolia
-run the following command:
+### 2 安装hugo-algolia
+运行下面的命令:
 ```bash
 $ npm install hugo-algolia -g
 ```
 
-### 3 configuration
-create new file named config.yaml, and add the following:
+### 3 配置
+创建config.yaml文件，并写入下面的配置
 ```yaml
 ---
 baseurl: "your baseurl"
@@ -35,11 +35,11 @@ algolia:
 ---
 ```
 
-### 4 modify your 'compile'
-modify the theme in 'compile'
+### 4 改写你的compile脚本
+修改compile中的主题
 
-### run
-run the following command:
+### 运行
+运行下面的命令
 ```bash
 main
 ```
