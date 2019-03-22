@@ -1,13 +1,14 @@
 package utils
 
 import (
-		"../po"
-	"io/ioutil"
-	"gopkg.in/yaml.v2"
-	"github.com/algolia/algoliasearch-client-go/algoliasearch"
+	"../po"
 	"encoding/json"
+	"github.com/algolia/algoliasearch-client-go/algoliasearch"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 )
 
+//更新分词
 func UpdateAlgolia(objects []algoliasearch.Object) bool {
 	data, _ := ioutil.ReadFile(po.ALGOLIA_CONFIG_YAML_PATH)
 	conf := po.ConfigYaml{}
@@ -16,10 +17,8 @@ func UpdateAlgolia(objects []algoliasearch.Object) bool {
 	index := client.InitIndex(conf.Algolia.Index)
 	index.Clear()
 	index.AddObjects(objects)
-	return true;
+	return true
 }
-
-
 
 func main() {
 	content, _ := ioutil.ReadFile("/Users/naah/Documents/Hugo/Naah-Blog/public/algolia.json")
@@ -28,5 +27,5 @@ func main() {
 	if err := json.Unmarshal(content, &objects); err != nil {
 		return
 	}
-	UpdateAlgolia(objects);
+	UpdateAlgolia(objects)
 }

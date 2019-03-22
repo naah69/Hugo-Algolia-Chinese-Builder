@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+//对象转map
 func Struct2Map(obj interface{}) map[string]interface{} {
 	t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)
@@ -15,4 +16,3 @@ func Struct2Map(obj interface{}) map[string]interface{} {
 	}
 	return data
 }
-

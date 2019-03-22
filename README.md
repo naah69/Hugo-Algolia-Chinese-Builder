@@ -8,6 +8,12 @@ Detail to look [Art White](https://github.com/naah69/hugo-theme-artwhite)
 
 ## 快速开始
 
+### 最新更新
+
+1. 加入线程池
+2. 使用cpu多核进行并行计算
+3. 代码加入注释
+
 ### 1 下载main
 把`main` 和 `compile` 放在 hugo project中.
 

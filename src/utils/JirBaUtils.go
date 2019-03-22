@@ -1,12 +1,12 @@
 package utils
 
 import (
-		"strings"
 	"github.com/deckarep/golang-set"
-			"github.com/yanyiwu/gojieba"
+	"github.com/yanyiwu/gojieba"
+	"strings"
 )
 
-func JieBaParticiples(title string,context string) []string {
+func JieBaParticiples(title string, context string) []string {
 	jiebaParticiplesArray := jieBaParticiples(context)
 	jiebaParticiplesSet := mapset.NewSet()
 	for _, obj := range jiebaParticiplesArray {
@@ -39,6 +39,8 @@ func jieBaParticiples(context string) []string {
 //	fmt.Println(sego.SegmentsToSlice(segments, false))
 //
 //}
+
+//取出停顿词
 func removeWord(wordSet mapset.Set) mapset.Set {
 	str := "一,、,。,七,☆,〈,∈,〉,三,昉,《,》,「,」,『,』,‐,【,】,В,—,〔,―,∕,〕,‖,〖,〗,‘,’,“,”,〝,〞,!,\",•,#,$,%,&,…,',㈧,∧,(,),*,∪,+,,,-,.,/,︰,′,︳,″,︴,︵,︶,︷,︸,‹,︹,:,›,︺,;,︻,<,︼,=,︽,>,︾,?,︿,@,﹀,﹁,﹂,﹃,﹄,≈,义,﹉,﹊,﹋,﹌,﹍,﹎,﹏,﹐,﹑,﹔,﹕,﹖,[,\\,],九,﹝,^,﹞,_,﹟,也,`,﹠,①,﹡,②,﹢,③,④,﹤,⑤,⑥,﹦,⑦,⑧,﹨,⑨,﹩,⑩,﹪,﹫,|,白,~,二,五,¦,«,¯,±,´,·,¸,»,¿,ˇ,ˉ,ˊ,ˋ,×,四,˜,零,÷,─,！,＂,＃,℃,＄,％,＆,＇,（,）,＊,＋,，,－,．,／,０,１,２,３,４,５,６,７,８,９,：,会,；,＜,＝,＞,？,＠,Ａ,Ｂ,Ｃ,Ｄ,Ｅ,Ｆ,Ｇ,Ｉ,Ｌ,Ｒ,Ｔ,Ｘ,Ｚ,［,］,＿,ａ,ｂ,ｃ,ｄ,ｅ,ｆ,ｇ,ｈ,ｉ,ｊ,ｎ,ｏ,｛,｜,｝,～,Ⅲ,↑,→,Δ,■,Ψ,▲,β,γ,λ,μ,ξ,φ,￣,￥,\\n,},{, "
 	split := strings.Split(str, ",")
