@@ -1,15 +1,19 @@
 package po
 
 import (
-	"sync"
-		"fmt"
 	"container/list"
+	"fmt"
+	"sync"
 )
 
-var ParticiplesMap sync.Map
 var WaitGroup = sync.WaitGroup{}
 var Queue = NewQueue()
-var AlgoliasMap=map[string]Algolia{}
+var AlgoliasMap = map[string]Algolia{}
+var CacheAlgoliasMap = map[string]Algolia{}
+var Md5Map = NewConcurrentMap(make(map[string]interface{}))
+var NeedArticleList = []*Article{}
+var NeedAlgoliasList = []*Algolia{}
+var ArticleMap = NewConcurrentMap(make(map[string]interface{}))
 
 const N int = 10
 
@@ -45,4 +49,8 @@ func (q *QueueNode) Pop() interface{} {
 	v := iter.Value
 	q.data.Remove(iter)
 	return v
+}
+
+func (q *QueueNode) Size() int {
+	return q.data.Len()
 }

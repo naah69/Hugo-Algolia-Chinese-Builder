@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"crypto/md5"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -75,4 +76,12 @@ func GetAllFiles(path string, array *[]string) []string {
 		*array = append(*array, absoluteFilePath)
 	}
 	return *array
+}
+
+//获取md5
+func Md5V(str string) string {
+	data := []byte(str)
+	has := md5.Sum(data)
+	md5str := fmt.Sprintf("%x", has)
+	return md5str
 }
