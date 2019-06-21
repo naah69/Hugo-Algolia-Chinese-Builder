@@ -21,13 +21,6 @@ compile为可执行脚本，放你hugo编译项目的命令
 创建config.yaml文件，并写入下面的配置
 ```yaml
 ---
-baseurl: "your baseurl"
-DefaultContentLanguage: "zh-cn"
-hasCJKLanguage: true
-languageCode: "zh-cn"
-title: "your site title"
-theme: "hugo-theme-artwhite"
-metaDataFormat: "yaml"
 algolia:
   index: "your algolia index"
   key: "your algolia admin key"
