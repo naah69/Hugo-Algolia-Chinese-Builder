@@ -3,6 +3,7 @@ package po
 import (
 	"container/list"
 	"fmt"
+	"regexp"
 	"sync"
 )
 
@@ -14,6 +15,9 @@ var Md5Map = NewConcurrentMap(make(map[string]interface{}))
 var NeedArticleList = []*Article{}
 var NeedAlgoliasList = []*Algolia{}
 var ArticleMap = NewConcurrentMap(make(map[string]interface{}))
+var StopSet = []string{}
+var HtmlReg, _ = regexp.Compile("<.{0,200}?>")
+var PointReg, _ = regexp.Compile("\n|\t|\r")
 
 const N int = 10
 

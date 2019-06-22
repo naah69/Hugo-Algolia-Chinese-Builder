@@ -52,7 +52,8 @@ func main() {
 				if value != nil {
 					oldMd5 = value.(string)
 				}
-				if strings.Compare(oldMd5, sss.Md5Value) == -1 {
+
+				if strings.Compare(oldMd5, sss.Md5Value) == -1 && po.CacheAlgoliasMap[title].Content != "" {
 					po.Queue.Push(sss)
 					po.NeedArticleList = append(po.NeedArticleList, sss)
 
@@ -106,7 +107,15 @@ func main() {
 	old := po.CONENT_DIR_PATH + "/"
 	for _, algolias := range cacheAlgoliasList {
 		title := algolias.Title
-		article := po.ArticleMap.GetValue(title).(*po.Article)
+
+		value := po.ArticleMap.GetValue(title)
+		var article *po.Article = nil
+		if value != nil {
+			article = value.(*po.Article)
+		} else {
+			fmt.Println(title)
+			continue
+		}
 		po.Md5Map.AddData(title, article.Md5Value)
 
 		mapObj := utils.Struct2Map(article.Yaml)
@@ -189,7 +198,7 @@ func ParticiplesAsynchronous() error {
 	context := article.Content
 	mdConf := article.Yaml
 
-	participles := utils.JieBaParticiples(mdConf.Title, context)
+	participles := utils.Participles(mdConf.Title, context)
 	article.Participles = &participles
 	fmt.Println("generate success: " + article.Path)
 	po.WaitGroup.Done()
