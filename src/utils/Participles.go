@@ -15,7 +15,7 @@ var (
 )
 
 func init() {
-	dictPath := constant.GetCurrentPath() + "data/dict.txt"
+	dictPath := constant.GetCurrentPath() + "sdata/dict.txt"
 
 	if constant.AlgoliaCongig.Participles.Dict.Path != "" {
 		dictPath = constant.AlgoliaCongig.Participles.Dict.Path
@@ -24,9 +24,8 @@ func init() {
 
 	jiebaPathArray := strings.Split(dictPath, ",")
 	jieba = gojieba.NewJieba(jiebaPathArray...)
-	jieba = gojieba.NewJieba()
 
-	stopPath := constant.GetCurrentPath() + "data/stop.txt"
+	stopPath := constant.GetCurrentPath() + "sdata/stop.txt"
 	if constant.AlgoliaCongig.Participles.Dict.StopPath != "" {
 		stopPath = constant.AlgoliaCongig.Participles.Dict.StopPath
 	}

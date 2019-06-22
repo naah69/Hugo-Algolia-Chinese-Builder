@@ -5,8 +5,8 @@ algolia:
   appID: "JMU5BSLQBN"
 participles:
   dict:
-    path: "data/dict.txt"
-    stop-path: "data/stop.txt"
+    path: "sdata/dict.txt"
+    stop-path: "sdata/stop1.txt"
 #http:
 #  httpProxy: "127.0.0.1:1087"
 
