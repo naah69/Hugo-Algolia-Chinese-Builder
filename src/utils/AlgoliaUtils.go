@@ -1,31 +1,31 @@
 package utils
 
 import (
-	"../po"
-	"encoding/json"
+	"../constant"
 	"github.com/algolia/algoliasearch-client-go/algoliasearch"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
+	"net/http"
+	"net/url"
 )
 
 //更新分词
 func UpdateAlgolia(objects []algoliasearch.Object) bool {
-	data, _ := ioutil.ReadFile(po.ALGOLIA_CONFIG_YAML_PATH)
-	conf := po.ConfigYaml{}
-	yaml.Unmarshal(data, &conf)
-	client := algoliasearch.NewClient(conf.Algolia.AppID, conf.Algolia.Key)
-	index := client.InitIndex(conf.Algolia.Index)
+
+	client := algoliasearch.NewClient(constant.AlgoliaCongig.Algolia.AppID, constant.AlgoliaCongig.Algolia.Key)
+	if constant.AlgoliaCongig.Http.Proxy != "" {
+		proxy := func(_ *http.Request) (*url.URL, error) {
+			return url.Parse("http://127.0.0.1:1087")
+			//return url.Parse("ss://rc4-md5:123456@ss.server.com:1080")
+		}
+		tr := &http.Transport{Proxy: proxy}
+		httpclient := &http.Client{
+			Transport: tr,
+		}
+		client.SetHTTPClient(httpclient)
+
+	}
+
+	index := client.InitIndex(constant.AlgoliaCongig.Algolia.Index)
 	index.Clear()
 	index.AddObjects(objects)
 	return true
-}
-
-func main() {
-	content, _ := ioutil.ReadFile("/Users/naah/Documents/Hugo/Naah-Blog/public/algolia.json")
-
-	var objects []algoliasearch.Object
-	if err := json.Unmarshal(content, &objects); err != nil {
-		return
-	}
-	UpdateAlgolia(objects)
 }

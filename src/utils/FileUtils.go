@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"../po"
+	"../constant"
 	"bytes"
 	"crypto/md5"
 	"fmt"
@@ -35,8 +35,8 @@ func ReadMdContext(path string) (string, string) {
 		context = str[strings.Index(str, "---")+4 : len(str)-1]
 	}
 	context = string(blackfriday.MarkdownBasic([]byte(context)))
-	context = po.HtmlReg.ReplaceAllString(context, ".")
-	context = po.PointReg.ReplaceAllString(context, ".")
+	context = constant.HtmlReg.ReplaceAllString(context, ".")
+	context = constant.PointReg.ReplaceAllString(context, ".")
 	return yaml, context
 }
 

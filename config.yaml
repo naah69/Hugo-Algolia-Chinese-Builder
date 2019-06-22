@@ -1,0 +1,13 @@
+---
+algolia:
+  index: "blog"
+  key: "53a899d91c25c45ce2b57a8abedc3401"
+  appID: "JMU5BSLQBN"
+participles:
+  dict:
+    path: "data/dict.txt"
+    stop-path: "data/stop.txt"
+#http:
+#  httpProxy: "127.0.0.1:1087"
+
+---

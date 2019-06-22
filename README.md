@@ -25,6 +25,8 @@ algolia:
   index: "your algolia index"
   key: "your algolia admin key"
   appID: "your algolia appID"
+#http:
+ #  httpProxy: "127.0.0.1:1087"
 ---
 ```
 
