@@ -1,13 +1,18 @@
 ---
+#配置你的api key
 algolia:
-  index: "blog"
-  key: "53a899d91c25c45ce2b57a8abedc3401"
-  appID: "JMU5BSLQBN"
+  index: "your algolia index"
+  key: "your algolia admin key"
+  appID: "your algolia appID"
+
+#字典和停用词位置
+#使用data目录会让hugo命令报错
 participles:
   dict:
     path: "sdata/dict.txt"
-    stop-path: "sdata/stop1.txt"
+    stop-path: "sdata/stop.txt"
+
+#配置http代理(可选)
 #http:
 #  httpProxy: "127.0.0.1:1087"
-
 ---
