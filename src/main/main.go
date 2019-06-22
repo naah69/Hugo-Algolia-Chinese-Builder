@@ -47,9 +47,13 @@ func main() {
 			for _, article := range articleList {
 				sss := article
 				title := sss.Yaml.Title
-				if strings.Compare(po.Md5Map.GetValue(title).(string), sss.Md5Value) == -1 {
+				value := po.Md5Map.GetValue(title)
+				oldMd5 := ""
+				if value != nil {
+					oldMd5 = value.(string)
+				}
+				if strings.Compare(oldMd5, sss.Md5Value) == -1 {
 					po.Queue.Push(sss)
-
 					po.NeedArticleList = append(po.NeedArticleList, sss)
 
 					taskNum++

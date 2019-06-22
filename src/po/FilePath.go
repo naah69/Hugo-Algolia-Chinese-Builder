@@ -8,8 +8,9 @@ import (
 )
 
 //修改回来
-//var PARENT_DIR_PATH string = getCurrentDirectory()
-var PARENT_DIR_PATH string = "/Users/naah/Documents/Hugo/Naah-Blog"
+var PARENT_DIR_PATH string = getCurrentDirectory()
+
+//var PARENT_DIR_PATH string = "/Users/naah/Documents/Hugo/Naah-Blog"
 var ALGOLIA_CONFIG_YAML_PATH string = PARENT_DIR_PATH + "/config.yaml"
 var COMPLIE_EXEC_PATH string = PARENT_DIR_PATH + "/compile"
 var CONENT_DIR_PATH string = PARENT_DIR_PATH + "/content"
