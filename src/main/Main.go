@@ -133,6 +133,7 @@ func main() {
 
 		}
 		uri := strings.Replace(article.Path, old, "", 1)
+		uri = strings.Replace(uri, ".md", "", 1)
 		mapObj["objectID"] = uri
 		mapObj["uri"] = uri
 
