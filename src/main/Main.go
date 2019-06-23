@@ -53,11 +53,10 @@ func main() {
 				if value != nil {
 					oldMd5 = value.(string)
 				}
-
-				if strings.Compare(oldMd5, sss.Md5Value) == -1 && constant.CacheAlgoliasMap[title].Content != "" {
+				compare := strings.Compare(oldMd5, sss.Md5Value)
+				if compare != 0 && constant.CacheAlgoliasMap[title].Content != "" {
 					constant.Queue.Push(sss)
 					constant.NeedArticleList = append(constant.NeedArticleList, sss)
-
 					taskNum++
 				}
 			}
