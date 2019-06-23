@@ -100,14 +100,14 @@ func main() {
 	//创建分词
 
 	algoliaStartTime := time.Now().UnixNano() / 1e6
-	for _, value := range constant.NeedArticleList {
-		cacheAlgoliasList = append(cacheAlgoliasList, po.Algolia{Title: value.Yaml.Title})
+	for _, article := range constant.NeedArticleList {
+		constant.CacheAlgoliasMap[article.Yaml.Title] = po.Algolia{Title: article.Yaml.Title}
+		//cacheAlgoliasList = append(cacheAlgoliasList, po.Algolia{Title: value.Yaml.Title})
 	}
 
 	var objArray = []algoliasearch.Object{}
 	old := constant.CONENT_DIR_PATH + "/"
-	for _, algolias := range cacheAlgoliasList {
-		title := algolias.Title
+	for title, algolias := range constant.CacheAlgoliasMap {
 
 		value := constant.ArticleMap.GetValue(title)
 		var article *po.Article = nil
