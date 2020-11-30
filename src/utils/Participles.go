@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"../constant"
+	"builder/constant1"
 	"github.com/deckarep/golang-set"
 	"github.com/go-ego/gse"
 	"github.com/yanyiwu/gojieba"
@@ -15,27 +15,27 @@ var (
 )
 
 func init() {
-	dictPath := constant.GetCurrentPath() + "sdata/dict.txt"
+	dictPath := constant1.GetCurrentPath() + "sdata/dict.txt"
 
-	if constant.AlgoliaCongig.Participles.Dict.Path != "" {
-		dictPath = constant.AlgoliaCongig.Participles.Dict.Path
+	if constant1.AlgoliaCongig.Participles.Dict.Path != "" {
+		dictPath = constant1.AlgoliaCongig.Participles.Dict.Path
 	}
 	seg.LoadDict(dictPath)
 
 	jiebaPathArray := strings.Split(dictPath, ",")
 	jieba = gojieba.NewJieba(jiebaPathArray...)
 
-	stopPath := constant.GetCurrentPath() + "sdata/stop.txt"
-	if constant.AlgoliaCongig.Participles.Dict.StopPath != "" {
-		stopPath = constant.AlgoliaCongig.Participles.Dict.StopPath
+	stopPath := constant1.GetCurrentPath() + "sdata/stop.txt"
+	if constant1.AlgoliaCongig.Participles.Dict.StopPath != "" {
+		stopPath = constant1.AlgoliaCongig.Participles.Dict.StopPath
 	}
 
 	stopStr := ReadFileString(stopPath)
 	if stopStr != "" {
-		constant.StopArray = strings.Split(stopStr, "\n")
+		constant1.StopArray = strings.Split(stopStr, "\n")
 	} else {
 		stop_str := "一,、,。,七,☆,〈,∈,〉,三,昉,《,》,「,」,『,』,‐,【,】,В,—,〔,―,∕,〕,‖,〖,〗,‘,’,“,”,〝,〞,!,\",•,#,$,%,&,…,',㈧,∧,(,),*,∪,+,,,-,.,/,︰,′,︳,″,︴,︵,︶,︷,︸,‹,︹,:,›,︺,;,︻,<,︼,=,︽,>,︾,?,︿,@,﹀,﹁,﹂,﹃,﹄,≈,义,﹉,﹊,﹋,﹌,﹍,﹎,﹏,﹐,﹑,﹔,﹕,﹖,[,\\,],九,﹝,^,﹞,_,﹟,也,`,﹠,①,﹡,②,﹢,③,④,﹤,⑤,⑥,﹦,⑦,⑧,﹨,⑨,﹩,⑩,﹪,﹫,|,白,~,二,五,¦,«,¯,±,´,·,¸,»,¿,ˇ,ˉ,ˊ,ˋ,×,四,˜,零,÷,─,！,＂,＃,℃,＄,％,＆,＇,（,）,＊,＋,，,－,．,／,0,１,２,３,４,５,６,７,８,９,：,会,；,＜,＝,＞,？,＠,Ａ,Ｂ,Ｃ,Ｄ,Ｅ,Ｆ,Ｇ,Ｉ,Ｌ,Ｒ,Ｔ,Ｘ,Ｚ,［,］,＿,ａ,ｂ,ｃ,ｄ,ｅ,ｆ,ｇ,ｈ,ｉ,ｊ,ｎ,ｏ,｛,｜,｝,～,Ⅲ,↑,→,Δ,■,Ψ,▲,β,γ,λ,μ,ξ,φ,￣,￥,\\n,},{,0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,\n,\t,\r, ,.."
-		constant.StopArray = strings.Split(stop_str, ",")
+		constant1.StopArray = strings.Split(stop_str, ",")
 	}
 
 }
@@ -50,7 +50,7 @@ func Participles(title string, context string) []string {
 	set = removeWord(set)
 	slice := set.ToSlice()
 	array := InterfaceArray2StringArray(slice)
-	atomic.AddInt32(&constant.Num, int32(len(array)))
+	atomic.AddInt32(&constant1.Num, int32(len(array)))
 	return array
 }
 
@@ -86,8 +86,8 @@ func array2set(aArray []string) mapset.Set {
 //取出停顿词
 func removeWord(wordSet mapset.Set) mapset.Set {
 
-	for index := range constant.StopArray {
-		wordSet.Remove(constant.StopArray[index])
+	for index := range constant1.StopArray {
+		wordSet.Remove(constant1.StopArray[index])
 	}
 	return wordSet
 }

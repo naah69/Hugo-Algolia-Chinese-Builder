@@ -1,7 +1,7 @@
-package constant
+package constant1
 
 import (
-	"../po"
+	"builder/po"
 	"container/list"
 	"fmt"
 	"regexp"
@@ -19,6 +19,7 @@ var ArticleMap = po.NewConcurrentMap(make(map[string]interface{}))
 var StopArray = []string{}
 var HtmlReg, _ = regexp.Compile("<.{0,200}?>")
 var PointReg, _ = regexp.Compile("\n|\t|\r")
+var NumberReg, _ = regexp.Compile("[0-9]+|[0-9]+\\.+[0-9]+")
 
 const N int = 10
 

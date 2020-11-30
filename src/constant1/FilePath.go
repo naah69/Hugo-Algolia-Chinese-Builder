@@ -1,7 +1,7 @@
-package constant
+package constant1
 
 import (
-	"../po"
+	"builder/po"
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"

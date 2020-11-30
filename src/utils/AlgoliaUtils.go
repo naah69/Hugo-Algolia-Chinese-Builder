@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"../constant"
+	"builder/constant1"
 	"github.com/algolia/algoliasearch-client-go/algoliasearch"
 	"net/http"
 	"net/url"
@@ -10,8 +10,8 @@ import (
 //更新分词
 func UpdateAlgolia(objects []algoliasearch.Object) bool {
 
-	client := algoliasearch.NewClient(constant.AlgoliaCongig.Algolia.AppID, constant.AlgoliaCongig.Algolia.Key)
-	if constant.AlgoliaCongig.Http.Proxy != "" {
+	client := algoliasearch.NewClient(constant1.AlgoliaCongig.Algolia.AppID, constant1.AlgoliaCongig.Algolia.Key)
+	if constant1.AlgoliaCongig.Http.Proxy != "" {
 		proxy := func(_ *http.Request) (*url.URL, error) {
 			return url.Parse("http://127.0.0.1:1087")
 			//return url.Parse("ss://rc4-md5:123456@ss.server.com:1080")
@@ -24,7 +24,7 @@ func UpdateAlgolia(objects []algoliasearch.Object) bool {
 
 	}
 
-	index := client.InitIndex(constant.AlgoliaCongig.Algolia.Index)
+	index := client.InitIndex(constant1.AlgoliaCongig.Algolia.Index)
 	index.Clear()
 	index.AddObjects(objects)
 	return true

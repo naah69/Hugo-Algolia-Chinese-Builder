@@ -1,15 +1,15 @@
 package main
 
 import (
-	"../constant"
-	"../po"
-	"../utils"
+	"builder/constant1"
+	"builder/po"
+	"builder/utils"
 	"bytes"
 	"fmt"
 	"github.com/algolia/algoliasearch-client-go/algoliasearch"
+	"github.com/json-iterator/go"
 	"gopkg.in/yaml.v2"
 	"runtime"
-	"src/github.com/json-iterator/go"
 	"strconv"
 	"strings"
 	"time"
@@ -38,25 +38,25 @@ func main() {
 	var flag = true
 	//有缓存时
 	if len(cacheAlgoliasList) != 0 {
-		exists, _ := utils.Exists(constant.MD5_ALGOLIA_JSON_PATH)
+		exists, _ := utils.Exists(constant1.MD5_ALGOLIA_JSON_PATH)
 		if exists {
 			flag = false
 			//有md5map
-			utils.ExecShell(constant.MD5_ALGOLIA_JSON_PATH)
-			constant.Md5Map = po.NewConcurrentMap(getMd5Map())
+			utils.ExecShell(constant1.MD5_ALGOLIA_JSON_PATH)
+			constant1.Md5Map = po.NewConcurrentMap(getMd5Map())
 
 			for _, article := range articleList {
 				sss := article
 				title := sss.Yaml.Title
-				value := constant.Md5Map.GetValue(title)
+				value := constant1.Md5Map.GetValue(title)
 				oldMd5 := ""
 				if value != nil {
 					oldMd5 = value.(string)
 				}
 				compare := strings.Compare(oldMd5, sss.Md5Value)
-				if compare != 0 && constant.CacheAlgoliasMap[title].Content != "" {
-					constant.Queue.Push(sss)
-					constant.NeedArticleList = append(constant.NeedArticleList, sss)
+				if compare != 0 {
+					constant1.Queue.Push(sss)
+					constant1.NeedArticleList = append(constant1.NeedArticleList, sss)
 					taskNum++
 				}
 			}
@@ -66,15 +66,15 @@ func main() {
 	//没缓存时
 	if flag {
 		for _, article := range articleList {
-			constant.Queue.Push(article)
-			constant.NeedArticleList = append(constant.NeedArticleList, article)
+			constant1.Queue.Push(article)
+			constant1.NeedArticleList = append(constant1.NeedArticleList, article)
 			taskNum++
 		}
 
 	}
 
 	//创建WaitGroup（java中的countdown）
-	constant.WaitGroup.Add(taskNum)
+	constant1.WaitGroup.Add(taskNum)
 
 	//设置cpu并行数
 	runtime.GOMAXPROCS(runtime.NumCPU())
@@ -92,23 +92,23 @@ func main() {
 	pool.Start()
 
 	//主线程阻塞
-	constant.WaitGroup.Wait()
+	constant1.WaitGroup.Wait()
 	pool.Stop()
 	fmt.Println("participles success: " + strconv.FormatInt((time.Now().UnixNano()/1e6)-participlesStartTime, 10) + " ms")
 
 	//创建分词
 
 	algoliaStartTime := time.Now().UnixNano() / 1e6
-	for _, article := range constant.NeedArticleList {
-		constant.CacheAlgoliasMap[article.Yaml.Title] = po.Algolia{Title: article.Yaml.Title}
+	for _, article := range constant1.NeedArticleList {
+		constant1.CacheAlgoliasMap[article.Yaml.Title] = po.Algolia{Title: article.Yaml.Title}
 		//cacheAlgoliasList = append(cacheAlgoliasList, po.Algolia{Title: value.Yaml.Title})
 	}
 
 	var objArray = []algoliasearch.Object{}
-	old := constant.CONENT_DIR_PATH + "/"
-	for title, algolias := range constant.CacheAlgoliasMap {
+	old := constant1.CONENT_DIR_PATH + "/"
+	for title, algolias := range constant1.CacheAlgoliasMap {
 
-		value := constant.ArticleMap.GetValue(title)
+		value := constant1.ArticleMap.GetValue(title)
 		var article *po.Article = nil
 		if value != nil {
 			article = value.(*po.Article)
@@ -116,13 +116,16 @@ func main() {
 			fmt.Println(title)
 			continue
 		}
-		constant.Md5Map.AddData(title, article.Md5Value)
+		constant1.Md5Map.AddData(title, article.Md5Value)
 
 		mapObj := utils.Struct2Map(article.Yaml)
 		if article.Participles != nil {
 			participlesArray := *article.Participles
 			var buffer bytes.Buffer
 			for _, str := range participlesArray {
+				if constant1.NumberReg.Match([]byte(str)) {
+					continue
+				}
 				buffer.WriteString(str)
 				buffer.WriteString(" ")
 			}
@@ -140,7 +143,7 @@ func main() {
 		objArray = append(objArray, mapObj)
 	}
 	fmt.Println("generate algolia index success: " + strconv.FormatInt((time.Now().UnixNano()/1e6)-algoliaStartTime, 10) + " ms")
-	fmt.Println("generate algolia index num: ", constant.Num)
+	fmt.Println("generate algolia index num: ", constant1.Num)
 	uploadStartTime := time.Now().UnixNano() / 1e6
 	//更新分词
 	utils.UpdateAlgolia(objArray)
@@ -148,10 +151,10 @@ func main() {
 	saveStartTime := time.Now().UnixNano() / 1e6
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 	algoliaBytes, _ := json.Marshal(objArray)
-	md5Bytes, _ := json.Marshal(constant.Md5Map.GetData())
-	utils.WriteFile(constant.ALGOLIA_COMPLIE_JSON_PATH, algoliaBytes)
-	utils.WriteFile(constant.CACHE_ALGOLIA_JSON_PATH, algoliaBytes)
-	utils.WriteFile(constant.MD5_ALGOLIA_JSON_PATH, md5Bytes)
+	md5Bytes, _ := json.Marshal(constant1.Md5Map.GetData())
+	utils.WriteFile(constant1.ALGOLIA_COMPLIE_JSON_PATH, algoliaBytes)
+	utils.WriteFile(constant1.CACHE_ALGOLIA_JSON_PATH, algoliaBytes)
+	utils.WriteFile(constant1.MD5_ALGOLIA_JSON_PATH, md5Bytes)
 
 	fmt.Println("save cache success: " + strconv.FormatInt((time.Now().UnixNano()/1e6)-saveStartTime, 10) + " ms")
 	fmt.Println("total : " + strconv.FormatInt((time.Now().UnixNano()/1e6)-startTime, 10) + " ms")
@@ -161,7 +164,7 @@ func getArticleList(mdList []string) []*po.Article {
 	var articleList []*po.Article
 	taskNum := len(mdList)
 	//创建WaitGroup（java中的countdown）
-	constant.WaitGroup.Add(taskNum)
+	constant1.WaitGroup.Add(taskNum)
 
 	//设置cpu并行数
 	runtime.GOMAXPROCS(runtime.NumCPU())
@@ -182,8 +185,8 @@ func getArticleList(mdList []string) []*po.Article {
 			}
 			article := po.Article{Yaml: mdConf, Content: context, Md5Value: utils.Md5V(context), Path: path1}
 			articleList = append(articleList, &article)
-			constant.ArticleMap.AddData(mdConf.Title, &article)
-			constant.WaitGroup.Done()
+			constant1.ArticleMap.AddData(mdConf.Title, &article)
+			constant1.WaitGroup.Done()
 			return nil
 		})
 
@@ -191,21 +194,21 @@ func getArticleList(mdList []string) []*po.Article {
 
 	pool.Start()
 	//主线程阻塞
-	constant.WaitGroup.Wait()
+	constant1.WaitGroup.Wait()
 	pool.Stop()
 	return articleList
 }
 
 //多线程分词
 func ParticiplesAsynchronous() error {
-	article := constant.Queue.Pop().(*po.Article)
+	article := constant1.Queue.Pop().(*po.Article)
 	context := article.Content
 	mdConf := article.Yaml
 
 	participles := utils.Participles(mdConf.Title, context)
 	article.Participles = &participles
 	fmt.Println("generate success: " + article.Path)
-	constant.WaitGroup.Done()
+	constant1.WaitGroup.Done()
 	return nil
 }
 
@@ -234,13 +237,13 @@ func existsConfigFile() {
 	fmt.Println("====================== check config file start =====================")
 	result := true
 
-	var res, _ = utils.Exists(constant.PARENT_DIR_PATH)
+	var res, _ = utils.Exists(constant1.PARENT_DIR_PATH)
 	result = result && res
-	res, _ = utils.Exists(constant.ALGOLIA_CONFIG_YAML_PATH)
+	res, _ = utils.Exists(constant1.ALGOLIA_CONFIG_YAML_PATH)
 	result = result && res
-	res, _ = utils.Exists(constant.COMPLIE_EXEC_PATH)
+	res, _ = utils.Exists(constant1.COMPLIE_EXEC_PATH)
 	result = result && res
-	res, _ = utils.Exists(constant.CONENT_DIR_PATH)
+	res, _ = utils.Exists(constant1.CONENT_DIR_PATH)
 	result = result && res
 	if result {
 		fmt.Println("check success: all file found")
@@ -255,7 +258,7 @@ func existsConfigFile() {
 
 //执行编译
 func execCompile() {
-	out, _ := utils.ExecShell(constant.COMPLIE_EXEC_PATH)
+	out, _ := utils.ExecShell(constant1.COMPLIE_EXEC_PATH)
 	fmt.Print(out)
 }
 
@@ -264,7 +267,7 @@ func getMarkDownList() []string {
 	var mdPathArray []string
 	var filePathArray []string
 
-	filePathArray = utils.GetAllFiles(constant.CONENT_DIR_PATH, &filePathArray)
+	filePathArray = utils.GetAllFiles(constant1.CONENT_DIR_PATH, &filePathArray)
 	for _, path := range filePathArray {
 		if strings.HasSuffix(path, ".md") {
 			mdPathArray = append(mdPathArray, path)
@@ -274,13 +277,13 @@ func getMarkDownList() []string {
 }
 
 func getCacheAlgoliasList() []po.Algolia {
-	var res, _ = utils.Exists(constant.CACHE_ALGOLIA_JSON_PATH)
+	var res, _ = utils.Exists(constant1.CACHE_ALGOLIA_JSON_PATH)
 	cacheAlgiliasArray := []po.Algolia{}
 	if res {
-		jsonString := utils.ReadFileString(constant.CACHE_ALGOLIA_JSON_PATH)
+		jsonString := utils.ReadFileString(constant1.CACHE_ALGOLIA_JSON_PATH)
 		cacheAlgiliasArray = getAlgiliasJsonArray(jsonString)
 		for _, algolias := range cacheAlgiliasArray {
-			constant.CacheAlgoliasMap[algolias.Title] = algolias
+			constant1.CacheAlgoliasMap[algolias.Title] = algolias
 		}
 	}
 	return cacheAlgiliasArray
@@ -296,7 +299,7 @@ func getAlgiliasJsonArray(jsonString string) []po.Algolia {
 }
 
 func getMd5Map() map[string]interface{} {
-	md5Json := utils.ReadFileString(constant.MD5_ALGOLIA_JSON_PATH)
+	md5Json := utils.ReadFileString(constant1.MD5_ALGOLIA_JSON_PATH)
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 	var md5Map map[string]interface{}
 	json.Unmarshal([]byte(md5Json), &md5Map)
